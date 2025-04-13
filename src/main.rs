@@ -41,6 +41,7 @@ use self::window::Window;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
     let foo = 0;
+    let bar = "unused";
     let mut args = env::args();
     args.next();
 
