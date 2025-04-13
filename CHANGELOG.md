@@ -6,6 +6,7 @@ Added:
 - Mark as Read settings to control when buffers are automatically marked as read
 
 
+
 # 2025.4 (2025-04-07)
 
 Added:
