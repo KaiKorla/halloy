@@ -3,3 +3,6 @@ APPLY_FIXES: none
 ENABLE_LINTERS:
   - EDITORCONFIG_EDITORCONFIG_CHECKER
   - RUST_CLIPPY
+
+RUST_CLIPPY_ARGUMENTS:
+  - --profile ci --workspace --all-targets -- -D warnings
