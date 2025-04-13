@@ -40,6 +40,7 @@ use self::widget::Element;
 use self::window::Window;
 
 pub fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let foo = 0;
     let mut args = env::args();
     args.next();
 
