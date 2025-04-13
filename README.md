@@ -12,7 +12,7 @@ Join **#halloy** on libera.chat if you have questions or looking for help.
 
 ## Installation
 
-[Installation documentation](https://halloy.chat/installation.html)
+[Installation documentation](https://halloy.chat/installation.html)  
 
 <a href="https://repology.org/project/halloy/versions">
     <img src="https://repology.org/badge/vertical-allrepos/halloy.svg" alt="Packaging status">
