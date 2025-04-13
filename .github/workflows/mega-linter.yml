@@ -51,7 +51,7 @@
 
             # You can override MegaLinter flavor used to have faster performances
             # More info at https://megalinter.io/latest/flavors/
-            uses: oxsecurity/megalinter@v8
+            uses: oxsecurity/megalinter/flavors/rust@v8.5.0
 
             id: ml
 
