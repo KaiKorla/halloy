@@ -70,11 +70,7 @@
               #     github.event_name == 'push' &&
               #     contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)
               #   }}
-              VALIDATE_ALL_CODEBASE: >-
-                ${{
-                  github.event_name == 'push' &&
-                  contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)
-                }}
+              VALIDATE_ALL_CODEBASE: true
 
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
