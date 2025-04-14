@@ -318,7 +318,7 @@ Internal messages are messages sent from Halloy itself.
 
 ### `[buffer.internal_messages.success]`
 
-A internal messages which is considered a "success" such as when a connection was restored, or when connected succesfully to a server.
+A internal messages which is considered a "success" such as when a connection was restored, or when connected successfully to a server.
 
 #### `enabled`
 
@@ -549,7 +549,7 @@ smart = 180
 
 ### `exclude`
 
-Exclude channels from receiving the server messag.
+Exclude channels from receiving the server message.
 If you pass `["#halloy"]`, the channel `#halloy` will not receive the server message. You can also exclude all channels by using a wildcard: `["*"]`.
 
 ```toml
