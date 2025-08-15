@@ -35,6 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc.js"></script>
@@ -91,10 +92,13 @@
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -142,7 +146,7 @@
                         <a href="https://github.com/squidowl/halloy" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/squidowl/halloy/edit/main/book/src/configuration/keyboard.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/squidowl/halloy/edit/main/book/src/configuration/keyboard.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -151,7 +155,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -207,7 +216,7 @@ move_right = "alt+l"
 <tr><td><code>file_transfers</code></td><td>Toggle File Transfers Buffer</td><td><kbd>⌘</kbd> + <kbd>j</kbd></td><td><kbd>ctrl</kbd> + <kbd>j</kbd></td></tr>
 <tr><td><code>logs</code></td><td>Toggle Logs Buffer</td><td><kbd>⌘</kbd> + <kbd>l</kbd></td><td><kbd>ctrl</kbd> + <kbd>l</kbd></td></tr>
 <tr><td><code>theme_editor</code></td><td>Toggle Theme Editor Window</td><td><kbd>⌘</kbd> + <kbd>t</kbd></td><td><kbd>ctrl</kbd> + <kbd>t</kbd></td></tr>
-<tr><td><code>highlight</code></td><td>Toggle Highlight Window</td><td><kbd>⌘</kbd> + <kbd>i</kbd></td><td><kbd>ctrl</kbd> + <kbd>i</kbd></td></tr>
+<tr><td><code>highlights</code></td><td>Toggle Highlights Window</td><td><kbd>⌘</kbd> + <kbd>i</kbd></td><td><kbd>ctrl</kbd> + <kbd>i</kbd></td></tr>
 <tr><td><code>quit_application</code></td><td>Quit Halloy</td><td>Not set</td><td>Not set</td></tr>
 </tbody></table>
 </div>
@@ -219,7 +228,7 @@ move_right = "alt+l"
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../configuration/notifications.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../configuration/logs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -233,7 +242,7 @@ move_right = "alt+l"
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../configuration/notifications.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../configuration/logs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -257,6 +266,7 @@ move_right = "alt+l"
         <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
+
 
 
     </div>
