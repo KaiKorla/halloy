@@ -78,7 +78,10 @@ impl FileTransfers {
                     match &config.file_transfer.save_directory {
                         Some(save_directory) => {
                             let file_save_directory =
-                                save_directory.join(transfer.filename);
+                                file_transfer::received_file_save_path(
+                                    save_directory,
+                                    &transfer.filename,
+                                );
                             return Task::done(Message::SavePathSelected(
                                 id,
                                 Some(file_save_directory),

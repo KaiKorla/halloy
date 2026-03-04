@@ -29,6 +29,8 @@ Fixed:
 Security:
 
 - Improve link preview management to mitigate spam-driven resource abuse
+- Sanitize incoming DCC filenames before building save paths to prevent path traversal / arbitrary file writes outside the configured save directory (including auto-accept and default manual approval paths).
+
 
 Thanks:
 

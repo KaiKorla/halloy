@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::path::{Component, Path, PathBuf};
 use std::time::Duration;
 
 use chrono::{DateTime, Utc};
@@ -9,6 +9,42 @@ use crate::{Server, User, dcc, server};
 
 pub mod manager;
 pub mod task;
+
+const DEFAULT_RECEIVE_FILENAME: &str = "download";
+
+pub fn sanitize_received_filename(filename: &str) -> String {
+    let Some(candidate) =
+        filename.rsplit(['/', '\\']).find(|part| !part.is_empty())
+    else {
+        return DEFAULT_RECEIVE_FILENAME.to_string();
+    };
+
+    let sanitized = candidate
+        .chars()
+        .filter(|c| *c != '\0' && !c.is_control())
+        .collect::<String>();
+
+    if sanitized.is_empty() {
+        return DEFAULT_RECEIVE_FILENAME.to_string();
+    }
+
+    let mut components = Path::new(&sanitized).components();
+
+    if matches!(components.next(), Some(Component::Normal(_)))
+        && components.next().is_none()
+    {
+        sanitized
+    } else {
+        DEFAULT_RECEIVE_FILENAME.to_string()
+    }
+}
+
+pub fn received_file_save_path(
+    save_directory: &Path,
+    filename: &str,
+) -> PathBuf {
+    save_directory.join(sanitize_received_filename(filename))
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Id(u16);
@@ -108,4 +144,49 @@ pub struct SendRequest {
     pub path: PathBuf,
     pub server: Server,
     pub server_handle: server::Handle,
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use super::{received_file_save_path, sanitize_received_filename};
+
+    #[test]
+    fn sanitize_received_filename_removes_path_segments() {
+        assert_eq!(sanitize_received_filename("../../etc/passwd"), "passwd");
+        assert_eq!(
+            sanitize_received_filename("..\\..\\AppData\\evil.txt"),
+            "evil.txt"
+        );
+        assert_eq!(
+            sanitize_received_filename("/tmp/../../target.txt"),
+            "target.txt"
+        );
+    }
+
+    #[test]
+    fn sanitize_received_filename_falls_back_for_invalid_components() {
+        assert_eq!(sanitize_received_filename(".."), "download");
+        assert_eq!(sanitize_received_filename("/"), "download");
+        assert_eq!(sanitize_received_filename(""), "download");
+    }
+
+    #[test]
+    fn received_file_save_path_stays_in_directory() {
+        let save_directory = PathBuf::from("downloads");
+
+        assert_eq!(
+            received_file_save_path(&save_directory, "../../etc/passwd"),
+            save_directory.join("passwd")
+        );
+        assert_eq!(
+            received_file_save_path(&save_directory, "/absolute/path.bin"),
+            save_directory.join("path.bin")
+        );
+        assert_eq!(
+            received_file_save_path(&save_directory, "..\\..\\oops.dat"),
+            save_directory.join("oops.dat")
+        );
+    }
 }

@@ -11,7 +11,7 @@ use rand::Rng;
 
 use super::{
     Direction, FileTransfer, Id, ReceiveRequest, SendRequest, Status, Task,
-    task,
+    received_file_save_path, sanitize_received_filename, task,
 };
 use crate::{Config, dcc};
 
@@ -180,6 +180,7 @@ impl Manager {
         );
 
         let id = self.get_random_id();
+        let filename = sanitize_received_filename(dcc_send.filename());
 
         // Otherwise this must be a new request
         let file_transfer = FileTransfer {
@@ -188,7 +189,7 @@ impl Manager {
             created_at: Utc::now(),
             direction: Direction::Received,
             remote_user: from.clone(),
-            filename: dcc_send.filename().to_string(),
+            filename,
             size: dcc_send.size(),
             status: Status::PendingApproval,
         };
@@ -223,8 +224,10 @@ impl Manager {
                 if let Some(save_directory) =
                     &config.file_transfer.save_directory
                 {
-                    let save_path =
-                        save_directory.join(&file_transfer.filename);
+                    let save_path = received_file_save_path(
+                        save_directory,
+                        &file_transfer.filename,
+                    );
 
                     log::debug!(
                         "Auto-accepting file transfer from {} for {:?}",
