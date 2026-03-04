@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
     <Package Name="Halloy"
              Version="$(PackageVersion)"
              Manufacturer="Squidowl"
@@ -203,6 +204,18 @@
                   Value="HalloyIcon.exe" />
         <Property Id="APPHELPLINK"
                   Value="https://halloy.chat/" />
+        <util:CloseApplication Id="CloseRunningHalloy"
+                               Target="halloy.exe"
+                               Condition="NOT Installed"
+                               PromptToContinue="yes"
+                               Description="Halloy is currently running. Setup will try to close it. If Halloy cannot be closed, setup will continue without launching another instance. Please restart Halloy manually after setup."
+                               CloseMessage="yes"
+                               ElevatedCloseMessage="yes"
+                               EndSessionMessage="yes"
+                               ElevatedEndSessionMessage="yes"
+                               Timeout="15"
+                               RebootPrompt="yes"
+                               Property="HALLOY_STILL_RUNNING" />
         <CustomAction Id="LaunchApp"
                       Impersonate="yes"
                       Execute="deferred"
@@ -210,8 +223,11 @@
                       ExeCommand=""
                       Return="asyncNoWait" />
         <InstallExecuteSequence>
+            <Custom Action="override Wix4CloseApplications_$(sys.BUILDARCHSHORT)"
+                    Before="RemoveExistingProducts" />
             <Custom Action="LaunchApp"
-                    Before="InstallFinalize" />
+                    Before="InstallFinalize"
+                    Condition="NOT Installed AND NOT WIX_UPGRADE_DETECTED AND NOT HALLOY_STILL_RUNNING AND NOT REBOOT" />
         </InstallExecuteSequence>
         <WixVariable Id="WixUILicenseRtf"
                      Value="wix/license.rtf" />

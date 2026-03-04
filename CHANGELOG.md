@@ -1,5 +1,9 @@
 # Unreleased
 
+Fixed:
+
+- Windows installer now tries to close running Halloy during upgrades, prevents automatic relaunch when Halloy cannot be closed, and prompts the user to restart Halloy manually when required.
+
 # 2026.4 (2026-03-03)
 
 Added:
