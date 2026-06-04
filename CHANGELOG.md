@@ -13,6 +13,7 @@ Fixed:
 Changed:
 
 - `buffer.reply.insert_nick` no longer inserts nick when replying in query buffers or to yourself
+- Replace the Windows MSI package with a per-user Inno Setup installer
 
 Thanks:
 
