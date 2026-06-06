@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - "**.rs"
@@ -8,7 +9,7 @@ on:
       - "Cargo.lock"
   push:
     branches:
-      - main
+      - innosetup-windows-installer-testing
     paths:
       - "**.rs"
       - "**/Cargo.toml"

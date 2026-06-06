@@ -1,13 +1,14 @@
 name: "Nightly Release"
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - Build
     types:
       - completed
     branches:
-      - main
+      - innosetup-windows-installer-testing
 
 # We must only run one release workflow at a time to prevent corrupting
 # our release artifacts.
@@ -21,21 +22,21 @@ jobs:
     strategy:
       matrix:
         target:
-          - target: macos
-            os: macos-latest
-            make: bash scripts/build-macos.sh
-            artifact_path: |
-              echo "ARTIFACT_PATH=target/packaging/macos/halloy.dmg" >> "$GITHUB_ENV"
+          # - target: macos
+          #   os: macos-latest
+          #   make: bash scripts/build-macos.sh
+          #   artifact_path: |
+          #     echo "ARTIFACT_PATH=target/packaging/macos/halloy.dmg" >> "$GITHUB_ENV"
           - target: windows
             os: windows-latest
             make: bash scripts/build-windows-installer.sh --nightly
             artifact_path: |
               echo "ARTIFACT_PATH=target/packaging/halloy-nightly-installer.exe" >> $env:GITHUB_ENV
-          - target: linux
-            os: ubuntu-latest
-            make: bash scripts/package-linux.sh package
-            artifact_path: |
-              echo "ARTIFACT_PATH=$(bash scripts/package-linux.sh archive_path)" >> "$GITHUB_ENV"
+          # - target: linux
+          #   os: ubuntu-latest
+          #   make: bash scripts/package-linux.sh package
+          #   artifact_path: |
+          #     echo "ARTIFACT_PATH=$(bash scripts/package-linux.sh archive_path)" >> "$GITHUB_ENV"
     runs-on: ${{ matrix.target.os }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -136,18 +137,18 @@ jobs:
     strategy:
       matrix:
         target:
-          - artifact: macos
-            artifact_name: |
-              echo "ARTIFACT_NAME=halloy.dmg" >> "$GITHUB_ENV"
-            asset_type: application/octet-stream
+          # - artifact: macos
+          #   artifact_name: |
+          #     echo "ARTIFACT_NAME=halloy.dmg" >> "$GITHUB_ENV"
+          #   asset_type: application/octet-stream
           - artifact: windows
             artifact_name: |
               echo "ARTIFACT_NAME=halloy-nightly-installer.exe" >> "$GITHUB_ENV"
             asset_type: application/x-dosexec
-          - artifact: linux
-            artifact_name: |
-              echo "ARTIFACT_NAME=$(bash scripts/package-linux.sh archive_name)" >> "$GITHUB_ENV"
-            asset_type: application/gzip
+          # - artifact: linux
+          #   artifact_name: |
+          #     echo "ARTIFACT_NAME=$(bash scripts/package-linux.sh archive_name)" >> "$GITHUB_ENV"
+          #   asset_type: application/gzip
 
     runs-on: ubuntu-latest
     env:
