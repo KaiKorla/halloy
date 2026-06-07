@@ -51,6 +51,7 @@ pub mod file_transfer;
 pub mod filehost;
 pub mod highlights;
 pub mod inclusivities;
+pub mod keyring;
 pub mod keys;
 pub mod logs;
 pub mod metadata;
@@ -561,6 +562,14 @@ impl Config {
         })
         .map_err(|e| Error::Parse(e.to_string()))?;
 
+        let mut proxy = proxy;
+        if let Some(proxy) = &mut proxy {
+            proxy.set_password(
+                keyring::proxy_password_key,
+                "global proxy configuration",
+            )?;
+        }
+
         let servers = ServerMap::new(
             servers,
             sidebar.order_channels_by,
@@ -804,17 +813,33 @@ pub enum Error {
     #[error(transparent)]
     LoadSounds(#[from] audio::LoadError),
     #[error(
-        "Only one of password, password_file and password_command can be set."
+        "Only one of password, password_file, password_command and password_keyring can be set."
     )]
     DuplicatePassword,
     #[error(
-        "Only one of nick_password, nick_password_file and nick_password_command can be set."
+        "Only one of nick_password, nick_password_file, nick_password_command and nick_password_keyring can be set."
     )]
     DuplicateNickPassword,
     #[error(
-        "Exactly one of sasl.plain.password, sasl.plain.password_file or sasl.plain.password_command must be set."
+        "Only one of channel_keys and channel_keys_keyring can be set for channel `{channel}` on server `{server}`."
+    )]
+    DuplicateChannelKey { server: String, channel: String },
+    #[error(
+        "Only one of password and password_keyring can be set for {label} in {context}."
+    )]
+    DuplicateProxyPassword { label: String, context: String },
+    #[error(
+        "Exactly one of sasl.plain.password, sasl.plain.password_file, sasl.plain.password_command or sasl.plain.password_keyring must be set."
     )]
     DuplicateSaslPassword,
+    #[error("{label} keyring entry `{key}` is missing for {context}.")]
+    MissingKeyringPasswordEntry {
+        label: String,
+        context: String,
+        key: String,
+    },
+    #[error("could not access keyring entry `{key}`: {error}")]
+    Keyring { key: String, error: String },
     #[error("Config does not exist")]
     ConfigMissing,
 }
