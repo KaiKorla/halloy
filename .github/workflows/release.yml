@@ -42,6 +42,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install $(cat .github/linux-deps.txt) git
+          sudo apt install -y desktop-file-utils libwayland-client0 libwayland-egl1 libxcursor1 libxi6 libxkbcommon-x11-0
 
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -68,6 +69,12 @@ jobs:
       - name: Build macOS/Linux
         if: matrix.target.target != 'windows'
         run: ${{ matrix.target.make }}
+
+      - name: Package Linux AppImage
+        if: matrix.target.target == 'linux' && runner.arch == 'X64'
+        run: |
+          bash scripts/appimage.sh package
+          echo "APPIMAGE_PATH=$(bash scripts/appimage.sh archive_path)" >> "$GITHUB_ENV"
 
       - name: Build Windows executable
         if: matrix.target.target == 'windows'
@@ -186,6 +193,14 @@ jobs:
           name: ${{ matrix.target.target }}
           path: ${{ env.ARTIFACT_PATH }}
 
+      - name: Upload Linux AppImage
+        if: matrix.target.target == 'linux' && runner.arch == 'X64'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: linux-appimage
+          path: ${{ env.APPIMAGE_PATH }}
+          if-no-files-found: error
+
   create-release:
     needs: build
     name: Create Release
@@ -227,6 +242,10 @@ jobs:
             artifact_name: |
               echo "ARTIFACT_NAME=$(bash scripts/package-linux.sh archive_name)" >> "$GITHUB_ENV"
             asset_type: application/gzip
+          - artifact: linux-appimage
+            artifact_name: |
+              echo "ARTIFACT_NAME=$(bash scripts/appimage.sh archive_name)" >> "$GITHUB_ENV"
+            asset_type: application/octet-stream
 
     runs-on: ubuntu-latest
     env:

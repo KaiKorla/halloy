@@ -28,6 +28,24 @@ sudo port install halloy
 
 ### Linux
 
+#### AppImage
+
+Download `halloy-VERSION-x86_64.AppImage` from the [latest release](https://github.com/squidowl/halloy/releases/latest). Replace `VERSION` with the downloaded release version, then make the file executable and launch it:
+
+```sh
+chmod +x halloy-VERSION-x86_64.AppImage
+./halloy-VERSION-x86_64.AppImage
+```
+
+The AppImage supports x86_64 Linux and requires an X11 or Wayland desktop session with working host graphics drivers. It uses the same binary as the Linux archive; compatibility with older distributions and glibc versions has not been verified.
+
+If FUSE is unavailable, [extract the AppImage](https://docs.appimage.org/user-guide/troubleshooting/fuse.html#extract-and-run-type-2-appimages) and run its contents:
+
+```sh
+./halloy-VERSION-x86_64.AppImage --appimage-extract
+./squashfs-root/AppRun
+```
+
 The following third party repositories are available for Linux
 
 #### Flatpak
